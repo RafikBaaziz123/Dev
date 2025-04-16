@@ -64,8 +64,8 @@ put_container_url() {
 
 get_container_ip()
 {
+	local container_name="$1"
     local csv_file="./containers_urls.csv"
-    local container_name="$1"
     # Check if file exists
     if [ ! -f "$csv_file" ]; then
         echo "Error: File $csv_file not found." >&2

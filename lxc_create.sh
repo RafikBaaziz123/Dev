@@ -39,4 +39,4 @@ if check_lxc "$container_name"; then
 else 
     init_lxc
 fi 
-cleanup
+#cleanup

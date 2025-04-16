@@ -1,14 +1,13 @@
 #!/bin/sh
 
- container_name="$1"
 
 init_config()
 {
+	local  container_name="$1"	
     local config_file="/var/lib/lxc/$container_name/config"
     . ./utilities.sh
+
     local container_ip=$(get_container_ip "$container_name")
-    echo "$container_ip"
-    host_mac_address=$(cat /sys/class/net/eth0/address)
 
     if [ -z "$container_name" ]; then
         echo "Usage: $0 <container_name>"
@@ -52,9 +51,10 @@ lxc.net.0.ipv4.address = "$container_ip"
 EOF
             ;;
         "tb_gateway")
+		    host_mac_address=$(cat /sys/class/net/ens4/address)
             cat <<EOF >> "$config_file"
 lxc.net.0.ipv4.address = "$container_ip"
-lxc.environment = TB_GW_ACCESS_TOKEN= $host_mac_address
+lxc.environment = TB_GW_ACCESS_TOKEN= "$host_mac_address"
 lxc.environment = TB_GW_HOST=thingsboard.dev.protectline.fr
 lxc.environment = TB_GW_PORT=1884
 EOF
