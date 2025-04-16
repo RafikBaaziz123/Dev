@@ -1,7 +1,7 @@
 #!/bin/sh
 lxc_create(){
     local container_name="$1"
-
+    
     
     echo "create $container_name"
     sudo lxc-create -n "$container_name" -t local -- --metadata "./tmp/$container_name/meta.tar.xz" --fstree "./tmp/$container_name/rootfs.tar.xz" || {

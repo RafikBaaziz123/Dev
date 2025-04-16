@@ -72,6 +72,7 @@ get_container_ip()
         return 1
     fi
     # Read the CSV and find matching container
+    
     container_ip=$(grep "^$container_name," "$csv_file" | cut -d, -f3)
     
     # Check if URL was found

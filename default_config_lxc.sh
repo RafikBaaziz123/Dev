@@ -5,7 +5,9 @@
 init_config()
 {
     local config_file="/var/lib/lxc/$container_name/config"
+    . ./utilities.sh
     local container_ip=$(get_container_ip "$container_name")
+    echo "$container_ip"
     host_mac_address=$(cat /sys/class/net/eth0/address)
 
     if [ -z "$container_name" ]; then
