@@ -1,7 +1,7 @@
 #!/bin/sh
 
 container_name="$1"
-echo "VOLUME $container_name_name"
+echo "VOLUME $container_name"
 case "$container_name" in
   "gladys_server")
     mkdir -p /var/volgladys/logs /var/volgladys/db

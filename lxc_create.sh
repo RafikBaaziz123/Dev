@@ -17,14 +17,15 @@ init_lxc(){
     lxc_start "$container_name"
     if [ "$container_name" = "matter_sdk" ]; then
         . ./open_thread.sh
-
+echo "run thread1"
         THREAD_CRED=$(OTBR_GET_CREDS)
         nohup ./matter.sh "$THREAD_CRED" & 
+        echo "run thread2"
     fi
 }
 
 cleanup(){
-    rm -rf "./tmp/$container_name*" 
+    rm -rf "./tmp/" 
 }
 
 # Check if container exists
