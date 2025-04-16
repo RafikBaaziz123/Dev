@@ -2,7 +2,7 @@
 
 
 
-csv_file="./containers_vars.csv"
+csv_file="./containers_urls.csv"
 # Check if file exists
 if [ ! -f "$csv_file" ]; then
     echo "Error: File $csv_file not found." >&2

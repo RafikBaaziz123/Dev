@@ -9,6 +9,8 @@ OTBR_SETUP (){
     cd ot-br-posix
 
     # Run bootstrap script
+    chmod +x     ./script/bootstrap
+
     ./script/bootstrap
 
     # Setup with specific interface
