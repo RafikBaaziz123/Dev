@@ -20,6 +20,7 @@ put_config_tbgw()
         #KO   
         cp $backup_file $config_file 
         lxc_restart "$container_name"
+        echo "KO"
     fi
     rm $backup_file
    

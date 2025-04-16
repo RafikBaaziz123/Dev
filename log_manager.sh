@@ -1,12 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 
-# Define the logrotate configuration file
-
-#read log conf and put it 
-
- 
-
-# Run logrotate with the specified configuration
 
 rotate() 
 {
