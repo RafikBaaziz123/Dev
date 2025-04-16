@@ -4,7 +4,7 @@ lxc_create(){
 
     
     echo "create $container_name"
-    sudo lxc-create -n "$container_name" -t local -- --metadata "./tmp/$container_name/meta.tar.xz" --fstree "./tmp/$container/rootfs.tar.xz" 
+    sudo lxc-create -n "$container_name" -t local -- --metadata "./tmp/$container_name/meta.tar.xz" --fstree "./tmp/$container_name/rootfs.tar.xz" 
         
 }   
 
@@ -51,9 +51,9 @@ check_lxc(){
 
 reset_lxc(){
     local container_name="$1"
-    lxc_destroy $container_name
-    lxc_create $container_name
-    lxc_start $container_name
+    lxc_destroy "$container_name"
+    lxc_create "$container_name" 
+    lxc_start "$container_name"
 
     
 }

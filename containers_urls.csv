@@ -2,4 +2,4 @@ matter_sdk,https://base-rootfs.s3.eu-west-3.amazonaws.com/matter-sdk/matter-sdk-
 mosquitto,https://base-rootfs.s3.eu-west-3.amazonaws.com/mosquitto/mosquitto-latest-master.tar.xz,10.0.3.12/24
 gladys_server,https://base-rootfs.s3.eu-west-3.amazonaws.com/gladys-server/gladys-server-4.51.0-develop-4ed1c40cf3606f16c82ddd2f2ce683f6a1187be5.tar.xz,10.0.3.10/24
 meari_bridge,https://base-rootfs.s3.eu-west-3.amazonaws.com/meari-bridge/meari-bridge-0.1-master-015933e78abce1eea684cc711be30133bded61db.tar.xz,10.0.3.14/24
-tb_gateway, https...........,10.0.3.11/24
+tb_gateway, https://base-rootfs.s3.eu-west-3.amazonaws.com/tb-gateway/tb-gateway-3.6.1-develop-6a87671eb7eae895c83ae88d506d3a1d9ad9ec5c.tar.xz,10.0.3.11/24

@@ -8,7 +8,7 @@ init_lxc(){
     
     download_artifact "$container_name"
     . ./lxc_utilities.sh
-
+    
     lxc_create "$container_name"
 
     . ./default_config_lxc.sh 
