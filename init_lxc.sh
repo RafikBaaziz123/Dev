@@ -12,7 +12,7 @@ fi
 #run for all LXCs
 while IFS=',' read -r container_name _; do
 echo "$container_name"
-./volumes.sh "$container_name"
+./volume.sh "$container_name"
 ./lxc_create.sh "$container_name" "false"
 done < "$csv_file"
 

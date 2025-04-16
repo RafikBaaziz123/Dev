@@ -103,6 +103,8 @@ url=$(get_container_url "$container_name")
     
     if [ "$http_code" -eq 200 ]; then
       echo "Download successful for $container_name."
+        tar -xf "./tmp/$container_name.tar.xz" -C "./tmp/$container_name"   
+
       return 0
     else
       retry_count=$((retry_count+1))
@@ -117,7 +119,6 @@ url=$(get_container_url "$container_name")
       fi
     fi
   done
-    tar -xf "./tmp/$container_name.tar.xz" -C "./tmp/$container_name"   
 }
 
 
