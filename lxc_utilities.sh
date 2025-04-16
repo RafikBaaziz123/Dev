@@ -52,7 +52,12 @@ check_lxc(){
 
 reset_lxc(){
     local container_name="$1"
+    
     lxc_destroy "$container_name"
+    
+    . ./volume.sh 
+    destroy_volume "$container_name"
+
     lxc_create "$container_name" 
     lxc_start "$container_name"
 

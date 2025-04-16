@@ -27,7 +27,7 @@ check_internet() {
 }
 
 get_container_url() {
-    local csv_file="./containers_urls.csv"
+    local csv_file="./containers_params.csv"
     local container_name="$1"
     # Check if file exists
     if [ ! -f "$csv_file" ]; then
@@ -49,7 +49,7 @@ get_container_url() {
 
 
 put_container_url() {
-    local csv_file="./containers_urls.csv"
+    local csv_file="./containers_params.csv"
     local container_url="$2"
     local container_name="$1"
     # Check if file exists
@@ -65,7 +65,7 @@ put_container_url() {
 get_container_ip()
 {
 	local container_name="$1"
-    local csv_file="./containers_urls.csv"
+    local csv_file="./containers_params.csv"
     # Check if file exists
     if [ ! -f "$csv_file" ]; then
         echo "Error: File $csv_file not found." >&2
@@ -128,7 +128,7 @@ url=$(get_container_url "$container_name")
 check_established_connection() {
     local service="$1"
     local port="$2"
-    if sudo netstat -nap | grep "$port" > /dev/null ; then
+    if sudo netstat -nap | grep "$port"  | grep "$service" > /dev/null ; then
         return 0 
     fi
     return 1 
