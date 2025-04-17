@@ -30,13 +30,14 @@ cleanup(){
 
 # Check if container exists
 . ./lxc_utilities.sh
-
+. ./volume.sh
 if check_lxc "$container_name"; then
     if [ "$doRecreate" = true ]; then 
-    echo "recreeate $doRecreate"
+    echo "recreate $doRecreate"
+        lxc_destroy "$container_name"
+        destroy_volume "$container_name"
         init_lxc
     fi
 else 
     init_lxc
 fi 
-#cleanup
