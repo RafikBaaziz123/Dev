@@ -4,11 +4,12 @@
 
 # csv_file="./containers_params.csv"
 # Check if file exists
+. ./variables.env
+
 if [ ! -f "$csv_file" ]; then
     echo "Error: File $csv_file not found." >&2
     return 1
 fi
-. ./variables.env
 
 #run for all LXCs
 while IFS=',' read -r container_name _; do
