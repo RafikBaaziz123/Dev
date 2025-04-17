@@ -39,7 +39,7 @@ lxc_destroy(){
 
     echo "destroy $container_name"
    
-        lxc-destroy -n "$container_name"
+        lxc-destroy -f -n "$container_name"
 }
 
 

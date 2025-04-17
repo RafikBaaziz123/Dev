@@ -25,7 +25,7 @@ init_lxc(){
 }
 
 cleanup(){
-    rm -rf "./tmp/" 
+    rm -rf "./tmp/$container_name" 
 }
 
 # Check if container exists
@@ -37,7 +37,13 @@ if check_lxc "$container_name"; then
         lxc_destroy "$container_name"
         destroy_volume "$container_name"
         init_lxc
+        cleanup "$container_name"
+
     fi
 else 
     init_lxc
+    cleanup "$container_name"
 fi 
+
+
+

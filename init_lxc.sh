@@ -19,5 +19,4 @@ echo "$container_name"
 create_volume "$container_name"
 ./lxc_create.sh "$container_name" "$dorecreate"
 done < "$csv_file"
-cleanup
 
