@@ -27,7 +27,7 @@ check_internet() {
 }
 
 get_container_url() {
-    local csv_file="./containers_params.csv"
+    # local csv_file="./containers_params.csv"
     local container_name="$1"
     # Check if file exists
     if [ ! -f "$csv_file" ]; then
@@ -49,7 +49,7 @@ get_container_url() {
 
 
 put_container_url() {
-    local csv_file="./containers_params.csv"
+    # local csv_file="./containers_params.csv"
     local container_url="$2"
     local container_name="$1"
     # Check if file exists
@@ -65,7 +65,7 @@ put_container_url() {
 get_container_ip()
 {
 	local container_name="$1"
-    local csv_file="./containers_params.csv"
+    # local csv_file="./containers_params.csv"
     # Check if file exists
     if [ ! -f "$csv_file" ]; then
         echo "Error: File $csv_file not found." >&2

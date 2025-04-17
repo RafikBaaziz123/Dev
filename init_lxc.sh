@@ -2,7 +2,7 @@
 
 
 
-csv_file="./containers_params.csv"
+# csv_file="./containers_params.csv"
 # Check if file exists
 if [ ! -f "$csv_file" ]; then
     echo "Error: File $csv_file not found." >&2
@@ -15,7 +15,6 @@ echo "$container_name"
 
 . ./volume.sh 
 create_volume "$container_name"
-
-./lxc_create.sh "$container_name" "false"
+./lxc_create.sh "$container_name" "$dorecreate"
 done < "$csv_file"
 

@@ -11,6 +11,7 @@ check_internet
 
 . ./lxc_config.sh
 preconfig
+. ./variables.env
 
 ./init_lxc.sh
 

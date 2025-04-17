@@ -3,7 +3,7 @@
 
 check_lxc_running(){
     local container_name="$1"
-    local csv_file="./containers_params.csv"
+    # local csv_file="./containers_params.csv"
 
       status=$(sudo lxc-info -n "$container_name" 2>/dev/null | grep '^State:' | awk '{print $2}')
     if ! [ "$status" = "RUNNING" ]; then
