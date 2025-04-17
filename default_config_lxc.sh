@@ -18,8 +18,8 @@ init_config()
 
     case "$container_name" in
         "gladys_server")
-                    cat $tb_gateway_config > "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' filename
+            cat $tb_gateway_config > "$config_file"
+            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
 
 #             cat <<EOF >> "$config_file"
 # lxc.net.0.ipv4.address = "$container_ip"
@@ -28,8 +28,8 @@ init_config()
 # EOF
             ;;
         "matter_sdk")
-        cat $matter_sdk_config > "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' filename
+            cat $matter_sdk_config > "$config_file"
+            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
 
 #             cat <<EOF >> "$config_file"
 # lxc.net.0.ipv4.address = "$container_ip"
@@ -41,7 +41,7 @@ init_config()
             sed -i '/^lxc.net.0.type = veth/ c\lxc.net.1.type = veth' "$config_file"
             sed -i '/^lxc.net.0.link = lxcbr0/ c\lxc.net.1.link = lxcbr0' "$config_file"
             sed -i '/^lxc.net.0.flags = up/ c\lxc.net.1.flags = up' "$config_file"
-        cat $meari_bridge_config > "$config_file"
+            cat $meari_bridge_config > "$config_file"
 
 #             cat <<EOF >> "$config_file"
 # lxc.net.1.ipv4.address = "$container_ip"
@@ -55,7 +55,7 @@ init_config()
             ;;
         "mosquitto")
             cat $mosquitto_config > "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' filename
+            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
 
 #             cat <<EOF >> "$config_file"
 # lxc.net.0.ipv4.address = "$container_ip"
@@ -63,7 +63,7 @@ init_config()
             ;;
         "tb_gateway")
             cat $tb_gateway_config > "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' filename
+            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
 		    host_mac_address=$(cat /sys/class/net/ens4/address)
      
 #             cat <<EOF >> "$config_file"
