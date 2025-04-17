@@ -4,10 +4,17 @@ csv_file="./containers_params.csv"
 
 while IFS=',' read -r container_name _; do
     # Check if the file exists
-    if [ ! -f "./wdg/$container_name" ]; then
-        echo "Error: ./wdg/$container_name file not found!"
-        exit 1
+   if [ ! -f "./wdg/$container_name" ]; then
+ 
+    # Create file and write value based on container name
+    if [ "$container_name" = "mosquitto" ]; then
+        echo "60" > "./wdg/$container_name"
+    else
+        echo "120" > "./wdg/$container_name"
     fi
+else
+    echo "File ./wdg/$container_name already exists"
+fi
 
     # Read the value from the file
     value=$(cat "./wdg/$container_name")

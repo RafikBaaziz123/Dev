@@ -5,6 +5,43 @@ import json
 import time
 import paho.mqtt.client as mqtt
 
+
+import os
+import re
+def load_env_file(file_path):
+    """
+    Load environment variables from a file.
+    Args:
+        file_path (str): Path to the .env file
+    Returns:
+        dict: Dictionary of loaded variables (also added to os.environ)
+    """
+    loaded_vars = {}
+    
+    try:
+        with open(file_path) as f:
+            for line in f:
+                line = line.strip()
+                # Skip empty lines and comments
+                if not line or line.startswith('#'):
+                    continue
+                
+                # Split on first '=' only
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip().strip("'\"")
+                    
+                    # Store in both dictionary and environment
+                    loaded_vars[key] = value
+                    os.environ[key] = value
+                    
+    except FileNotFoundError:
+        print(f"Warning: File {file_path} not found")
+    except Exception as e:
+        print(f"Error loading environment: {str(e)}")
+    
+
 def check_LXC_UP(csv_file):
     """
     Check if LXC containers are up by subscribing to MQTT topics.
@@ -22,7 +59,12 @@ def check_LXC_UP(csv_file):
             
             # Create a new client for each container to avoid message overlap
             client = mqtt.Client()
-            client.connect("localhost", 1883, 60)
+            # source_env_file("variables.env")
+
+            load_env_file('variables.env')
+
+            #print (type(os.environ.get("broker_ip")), os.environ.get("broker_port"))
+            client.connect(os.environ.get("broker_ip"), int(os.environ.get("broker_port")), 60)
             
             topic = f"lxc/status/healthcheck/{container_name}"
             messages = []
@@ -109,4 +151,4 @@ def check_last_activity_time_timeout(container_name):
 
 # Example usage
 if __name__ == "__main__":
-    check_LXC_UP("containers.csv")
+    check_LXC_UP("containers_params.csv")
