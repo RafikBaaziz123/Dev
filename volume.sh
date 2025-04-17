@@ -38,19 +38,19 @@
 
   case "$container_name" in
     "gladys_server")
-      rm -rf  /var/volgladys/logs /var/volgladys/db
+      rm -rf  /var/volgladys/
       ;;
     "matter_sdk")
-      rm -rf  /var/volmatter/matter_sdk /var/volmatter/logs
+      rm -rf  /var/volmatter/
       ;;
     "meari_bridge")
-      rm -rf  /var/volmeari/logs
+      rm -rf  /var/volmeari/
       ;;
     "mosquitto")
-      rm -rf  /var/volmosquitto/logs
+      rm -rf  /var/volmosquitto/
       ;;
     "tb_gateway")
-      rm -rf -p /var/voltb/config /var/voltb/extensions /var/voltb/logs
+      rm -rf -p /var/voltb/ 
       ;;
     *)
       echo "Unknown container: $container_name"
