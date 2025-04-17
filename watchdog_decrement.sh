@@ -1,6 +1,5 @@
 #!/bin/sh
-
-csv_file="./containers_params.csv"
+. ./variables.env
 
 while IFS=',' read -r container_name _; do
     # Check if the file exists
