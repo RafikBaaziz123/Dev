@@ -10,10 +10,6 @@ def check_LXC_UP(csv_file):
     Check if LXC containers are up by subscribing to MQTT topics.
     If a container is up but has timed out, restart it.
     """
-    # MQTT client setup
-    client = mqtt.Client()
-    client.connect("localhost", 1883, 60)
-    
     # Read containers from CSV file
     with open(csv_file, 'r') as file:
         csv_reader = csv.reader(file)
@@ -22,15 +18,27 @@ def check_LXC_UP(csv_file):
                 continue
                 
             container_name = row[0]
-            topic = f"lxc/status/healthcheck/{container_name}"
+            print(f"Checking container: {container_name}")
             
-            # Subscribe to the topic and wait for a message
+            # Create a new client for each container to avoid message overlap
+            client = mqtt.Client()
+            client.connect("localhost", 1883, 60)
+            
+            topic = f"lxc/status/healthcheck/{container_name}"
             messages = []
             
+            # Define message handler specific to this container
             def on_message(client, userdata, msg):
-                payload = msg.payload.decode('utf-8')
-                messages.append(json.loads(payload))
+                if msg.topic == topic:  # Only process messages for this specific topic
+                    payload = msg.payload.decode('utf-8')
+                    try:
+                        data = json.loads(payload)
+                        messages.append(data)
+                        print(f"Received for {container_name}: {payload}")
+                    except json.JSONDecodeError:
+                        print(f"Invalid JSON received for {container_name}: {payload}")
             
+            # Set up and start the client
             client.on_message = on_message
             client.subscribe(topic)
             client.loop_start()
@@ -41,19 +49,23 @@ def check_LXC_UP(csv_file):
             while not messages and time.time() - start_time < timeout:
                 time.sleep(0.1)
             
+            # Clean up - unsubscribe and stop the loop
+            client.unsubscribe(topic)
             client.loop_stop()
+            client.disconnect()
             
             # Process the received message if any
             if messages and "status" in messages[0] and messages[0]["status"] == "UP":
                 timeout_value = check_last_activity_time_timeout(container_name)
+                print(f"Container {container_name} is UP, timeout value: {timeout_value}")
                 if timeout_value == 0:
                     # Restart container
+                    print(f"Restarting container {container_name}")
                     restart_container(container_name)
                 else:
                     put_last_activity_time_timeout(container_name)
-    
-    # Disconnect MQTT client
-    client.disconnect()
+            else:
+                print(f"No valid status message received for {container_name}")
 
 def restart_container(container_name):
     """Restart an LXC container using lxc_utilities.sh"""
@@ -70,7 +82,7 @@ def put_last_activity_time_timeout(container_name):
     For mosquitto container: 60 seconds
     For all other containers: 120 seconds
     """
- 
+    
     # Create or empty the file
     file_path = f"wdg/{container_name}"
     with open(file_path, 'w') as file:
@@ -79,6 +91,7 @@ def put_last_activity_time_timeout(container_name):
             file.write("60")
         else:
             file.write("120")
+    print(f"Updated timeout for {container_name}")
 
 def check_last_activity_time_timeout(container_name):
     """
@@ -96,4 +109,4 @@ def check_last_activity_time_timeout(container_name):
 
 # Example usage
 if __name__ == "__main__":
-    check_LXC_UP("containers_params.csv")
+    check_LXC_UP("containers.csv")
