@@ -6,23 +6,23 @@
 
   case "$container_name" in
     "gladys_server")
-      rm -rf  /var/volgladys/logs /var/volgladys/db
+      mkdir  /var/volgladys/logs /var/volgladys/db
       chmod 666 /var/volgladys/logs /var/volgladys/db
       ;;
     "matter_sdk")
-      rm -rf  /var/volmatter/matter_sdk /var/volmatter/logs
+      mkdir  /var/volmatter/matter_sdk /var/volmatter/logs
       chmod 666 /var/volmatter/matter_sdk /var/volmatter/logs
       ;;
     "meari_bridge")
-      rm -rf  /var/volmeari/logs
+      mkdir  /var/volmeari/logs
       chmod 666 /var/volmeari/logs
       ;;
     "mosquitto")
-      rm -rf  /var/volmosquitto/logs
+      mkdir  /var/volmosquitto/logs
       chmod 666 /var/volmosquitto/logs
       ;;
     "tb_gateway")
-      rm -rf  /var/voltb/config /var/voltb/extensions /var/voltb/logs
+      mkdir  /var/voltb/config /var/voltb/extensions /var/voltb/logs
       chmod 666 /var/voltb/config /var/voltb/extensions /var/voltb/logs
       ;;
     *)
