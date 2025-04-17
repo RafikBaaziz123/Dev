@@ -17,10 +17,9 @@ init_lxc(){
 
     lxc_start "$container_name"
     if [ "$container_name" = "matter_sdk" ]; then
-        . ./open_thread.sh
-echo "run thread1"
-        THREAD_CRED=$(OTBR_GET_CREDS)
-        nohup ./matter.sh "$THREAD_CRED" & 
+        # . ./open_thread.sh
+        # THREAD_CRED=$(OTBR_GET_CREDS)
+        # nohup ./matter.sh "$THREAD_CRED" & 
         echo "run thread2"
     fi
 }
@@ -34,6 +33,7 @@ cleanup(){
 
 if check_lxc "$container_name"; then
     if [ "$doRecreate" = true ]; then 
+    echo "recreeate $doRecreate"
         init_lxc
     fi
 else 
