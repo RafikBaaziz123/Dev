@@ -19,8 +19,7 @@ init_config()
     case "$container_name" in
         "gladys_server")
             echo $tb_gateway_config >> "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
-
+sed -i "s|^lxc\.net\.0\.ipv4\.address =.*|lxc.net.0.ipv4.address = ${container_ip//\//\\/}|" "$config_file"
 #             cat <<EOF >> "$config_file"
 # lxc.net.0.ipv4.address = "$container_ip"
 # lxc.environment = MOSQUITTO_URL=mqtt://10.0.3.12:1883
@@ -29,8 +28,7 @@ init_config()
             ;;
         "matter_sdk")
             echo $matter_sdk_config >> "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
-
+sed -i "s|^lxc\.net\.0\.ipv4\.address =.*|lxc.net.0.ipv4.address = ${container_ip//\//\\/}|" "$config_file"
 #             cat <<EOF >> "$config_file"
 # lxc.net.0.ipv4.address = "$container_ip"
 # EOF
@@ -55,16 +53,14 @@ init_config()
             ;;
         "mosquitto")
             echo $mosquitto_config >> "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
-
+sed -i "s|^lxc\.net\.0\.ipv4\.address =.*|lxc.net.0.ipv4.address = ${container_ip//\//\\/}|" "$config_file"
 #             cat <<EOF >> "$config_file"
 # lxc.net.0.ipv4.address = "$container_ip"
 # EOF
             ;;
         "tb_gateway")
             echo $tb_gateway_config >> "$config_file"
-            sed -i 's/^lxc\.net\.0\.ipv4\.address =.*/lxc.net.0.ipv4.address = "$container_ip"/' $config_file
-		    host_mac_address=$(cat /sys/class/net/ens4/address)
+sed -i "s|^lxc\.net\.0\.ipv4\.address =.*|lxc.net.0.ipv4.address = ${container_ip//\//\\/}|" "$config_file"		    host_mac_address=$(cat /sys/class/net/ens4/address)
      
 #             cat <<EOF >> "$config_file"
 # lxc.net.0.ipv4.address = "$container_ip"

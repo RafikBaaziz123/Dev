@@ -141,5 +141,5 @@ def check_last_activity_time_timeout(container_name):
 
 # Example usage
 if __name__ == "__main__":
-
-    check_LXC_UP("containers_params.csv")
+    load_env_file('variables.env')        
+    check_LXC_UP(os.environ.get('csv_file'))

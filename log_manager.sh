@@ -6,7 +6,7 @@ logrotate -f ./cron/rotate.conf
 purge() 
 {
 #clean log files and remove compressed history
-> *.log
+> ./logs/*.log
 rm *.gz
 }
 
