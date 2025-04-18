@@ -50,7 +50,7 @@
       rm -rf  /var/volmosquitto/
       ;;
     "tb_gateway")
-      rm -rf -p /var/voltb/ 
+      rm -rf /var/voltb/ 
       ;;
     *)
       echo "Unknown container: $container_name"

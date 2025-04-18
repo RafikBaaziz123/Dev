@@ -28,7 +28,6 @@ check_internet() {
 
 get_container_url() {
     . ./variables.env
-
     # local csv_file="./containers_params.csv"
     local container_name="$1"
     # Check if file exists
@@ -38,7 +37,6 @@ get_container_url() {
     fi
     # Read the CSV and find matching container
     container_url=$(grep "^$container_name," "$csv_file" | cut -d, -f2)
-    
     # Check if URL was found
     if [ -z "$container_url" ]; then
         echo "Error: Container $container_name not found in $csv_file." >&2
@@ -52,7 +50,6 @@ get_container_url() {
 
 put_container_url() {
     . ./variables.env
-
     # local csv_file="./containers_params.csv"
     local container_url="$2"
     local container_name="$1"
@@ -72,15 +69,12 @@ get_container_ip()
     # local csv_file="./containers_params.csv"
     # Check if file exists
     . ./variables.env
-
     if [ ! -f "$csv_file" ]; then
         echo "Error: File $csv_file not found." >&2
         return 1
     fi
     # Read the CSV and find matching container
-    
     container_ip=$(grep "^$container_name," "$csv_file" | cut -d, -f3)
-    
     # Check if URL was found
     if [ -z "$container_ip" ]; then
         echo "Error: Container $container_name not found in $csv_file." >&2
@@ -96,36 +90,27 @@ get_container_ip()
 
 download_artifact() {
 local container_name="$1"
-
 url=$(get_container_url "$container_name")
   max_retries=5
   retry_delay=10
   retry_count=0
-  
-  
   while [ $retry_count -lt $max_retries ]; do
     echo "Attempt $((retry_count+1)) of $max_retries: Downloading $container_name..."
-    
     http_code=$(curl -w "%{http_code}\n" -o "./tmp/$container_name.tar.xz" --insecure -s "$url")
-    
     if [ "$http_code" -eq 200 ]; then
-      echo "Download successful for $container_name."
-
-
+        echo "Download successful for $container_name."
         tar -xf "./tmp/$container_name.tar.xz" -C "./tmp/$container_name"   
-
-      return 0
+        return 0
     else
-      retry_count=$((retry_count+1))
-      echo "Download failed for $container_name. HTTP code: $http_code. Retry $retry_count of $max_retries."
-      
-      if [ $retry_count -lt $max_retries ]; then
-        echo "Waiting $retry_delay seconds before next attempt..."
-        sleep $retry_delay
-      else
-        echo "Maximum retries reached. Download for $container_name failed permanently."
-        return 1
-      fi
+        retry_count=$((retry_count+1))
+        echo "Download failed for $container_name. HTTP code: $http_code. Retry $retry_count of $max_retries."
+        if [ $retry_count -lt $max_retries ]; then
+            echo "Waiting $retry_delay seconds before next attempt..."
+            sleep $retry_delay
+        else
+            echo "Maximum retries reached. Download for $container_name failed permanently."
+            return 1
+        fi
     fi
   done
 }

@@ -4,10 +4,7 @@ import subprocess
 import json
 import time
 import paho.mqtt.client as mqtt
-
-
 import os
-import re
 def load_env_file(file_path):
     """
     Load environment variables from a file.
@@ -16,30 +13,23 @@ def load_env_file(file_path):
     Returns:
         dict: Dictionary of loaded variables (also added to os.environ)
     """
-    loaded_vars = {}
     
-    try:
-        with open(file_path) as f:
-            for line in f:
-                line = line.strip()
-                # Skip empty lines and comments
-                if not line or line.startswith('#'):
-                    continue
+    with open(file_path) as f:
+        for line in f:
+            line = line.strip()
+            # Skip empty lines and comments
+            if not line or line.startswith('#'):
+                continue
+            
+            # Split on first '=' only
+            if '=' in line:
+                key, value = line.split('=', 1)
+                key = key.strip()
+                value = value.strip().strip("'\"")
                 
-                # Split on first '=' only
-                if '=' in line:
-                    key, value = line.split('=', 1)
-                    key = key.strip()
-                    value = value.strip().strip("'\"")
-                    
-                    # Store in both dictionary and environment
-                    loaded_vars[key] = value
-                    os.environ[key] = value
-                    
-    except FileNotFoundError:
-        print(f"Warning: File {file_path} not found")
-    except Exception as e:
-        print(f"Error loading environment: {str(e)}")
+                # Store in both dictionary and environment
+                os.environ[key] = value
+                
     
 
 def check_LXC_UP(csv_file):
@@ -85,8 +75,8 @@ def check_LXC_UP(csv_file):
             client.subscribe(topic)
             client.loop_start()
             
-            # Wait for up to 5 seconds for a message
-            timeout = 5
+            # Wait for up to 30 seconds for a message
+            timeout = 30
             start_time = time.time()
             while not messages and time.time() - start_time < timeout:
                 time.sleep(0.1)
@@ -151,4 +141,5 @@ def check_last_activity_time_timeout(container_name):
 
 # Example usage
 if __name__ == "__main__":
+
     check_LXC_UP("containers_params.csv")

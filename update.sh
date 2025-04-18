@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Get MAC address of ens4 interface
-MAC_ADDRESS=$(ip link show ens4 | grep -o 'link/ether [^ ]*' | cut -d' ' -f2)
+
+MAC_ADDRESS=$(cat /sys/class/net/$network_interface/address )
 
 check_update_orchestrator() {
     echo "Checking for orchestrator updates..."
-    
     # Download the version file using MAC address in header
     curl --header "mac: ${MAC_ADDRESS}" -O https://lxc-volumes.s3.eu-west-3.amazonaws.com/orchestrator/orchestrator_version.csv
     
@@ -13,19 +13,15 @@ check_update_orchestrator() {
         echo "Failed to download version file"
         return 1
     fi
-    
     # Read remote version into variable
     version=$(cat orchestrator_version.csv)
-    
     # Read local version
     if [ ! -f versions/orchestrator_version ]; then
         echo "Local version file not found"
         mkdir -p versions
         echo "0" > versions/orchestrator_version
     fi
-    
     local_version=$(cat versions/orchestrator_version)
-    
     # Compare versions
     if [ "$version" == "$local_version" ]; then
         echo "Orchestrator is up to date (version: $local_version)"
@@ -37,10 +33,8 @@ check_update_orchestrator() {
 
 update_orchestrator() {
     echo "Updating orchestrator..."
-    
     # Download the orchestrator package
     curl --header "mac: ${MAC_ADDRESS}" -O https://lxc-volumes.s3.eu-west-3.amazonaws.com/orchestrator/orchestrator.tar.gz
-    
     if [ ! -f orchestrator.tar.gz ]; then
         echo "Failed to download orchestrator package"
         return 1

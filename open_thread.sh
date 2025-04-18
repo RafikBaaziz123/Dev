@@ -25,12 +25,15 @@ OTBR_SETUP (){
     sudo ot-ctl ifconfig up
     sudo ot-ctl thread start
 
+    $THREAD_CRED=$(sudo ./ot-br-posix/ot-ctl dataset active -x)
+    sed -i '/^thread_cred=/c\thread_cred='"$THREAD_CRED" variables.env
 
 }
 
 OTBR_GET_CREDS()
 {
-    sudo ./ot-br-posix/ot-ctl dataset active -x
-     
+    $THREAD_CRED=$(sudo ./ot-br-posix/ot-ctl dataset active -x)
+    sed -i '/^thread_cred=/c\thread_cred='"$THREAD_CRED" variables.env
+
   
 }
