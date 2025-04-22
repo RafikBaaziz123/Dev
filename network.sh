@@ -1,7 +1,6 @@
 #!/bin/sh
 
-
-    . ./variables.env
+#TODO  choose env varibles 
 
 ip link set wlan0 down
 brctl addbr br-wan

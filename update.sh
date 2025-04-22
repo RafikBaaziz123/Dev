@@ -14,37 +14,85 @@ check_update_orchestrator() {
         return 1
     fi
     # Read remote version into variable
-    version=$(cat orchestrator_version.csv)
-    # Read local version
-    if [ ! -f versions/orchestrator_version ]; then
-        echo "Local version file not found"
-        mkdir -p versions
-        echo "0" > versions/orchestrator_version
-    fi
+    new_version=$(cat orchestrator_version.csv)
+ 
     local_version=$(cat versions/orchestrator_version)
-    # Compare versions
-    if [ "$version" == "$local_version" ]; then
-        echo "Orchestrator is up to date (version: $local_version)"
-    else
-        echo "New version available: $version (current: $local_version)"
+    if [$(compare_versions "$new_version" "$local_version" ) == 1] : then 
         update_orchestrator
     fi
 }
 
+
+
+compare_versions() {
+datetime=$(date "+%Y_%m_%d-%H:%M") 
+    ver1=$1
+    ver2=$2
+    # Validate version formats
+    if ! (echo "$ver1" | grep -qE '^[0-9]+(\.[0-9]+)*$') || ! (echo "$ver2" | grep -qE '^[0-9]+(\.[0-9]+)*$'); then
+    echo "$datetime: Error - Invalid version format: $ver1 or $ver2"
+    return 3
+    fi
+    
+    if [ "$ver1" = "$ver2" ]; then
+        return 0
+    fi
+
+    while true; do
+        ver1_first=$(echo "$ver1" | cut -d '.' -f 1)
+        ver1=${ver1#"$ver1_first"}
+        ver1=${ver1#.}
+
+        ver2_first=$(echo "$ver2" | cut -d '.' -f 1)
+        ver2=${ver2#"$ver2_first"}
+        ver2=${ver2#.}
+
+        if [ "${ver1_first:-0}" -gt "${ver2_first:-0}" ]; then
+            echo "$datetime : remote $3 is newer."   
+            return 1
+        elif [ "${ver1_first:-0}" -lt "${ver2_first:-0}" ]; then
+            return 2 
+        else 
+            if [ -z "$ver1" ] && [ -z "$ver2" ]; then
+              continue
+            fi
+        fi  
+    done
+}
+
+
+
+
+check_md5() {
+    local orchestrator_md5_url="$1"
+    local orchestrator_file="$2"
+    #TODO need url to get checksum from
+  local_md5=$(md5sum "$orchestrator_file" | awk '{print $1}')
+  remote_md5=$(curl --header "mac: ${MAC_ADDRESS}" -s "$orchestrator_md5_url" | awk '{print $1}')
+  if [ "$remote_md5" == "$local_md5" ]; then  
+          mv "/tmp/aux" "/tmp/orchestrator.tar.gz"
+          tar -xzf /tmp/orchestrator.tar.gz -C /root --overwrite
+          echo "$datetime : Daemon has been updated successfully." 
+    else
+        echo "$datetime : Daemon checksums are different aborting." 
+    fi
+    
+}
 update_orchestrator() {
+
+    # For now, we'll just update the version file
     echo "Updating orchestrator..."
     # Download the orchestrator package
-    curl --header "mac: ${MAC_ADDRESS}" -O https://lxc-volumes.s3.eu-west-3.amazonaws.com/orchestrator/orchestrator.tar.gz
+    orchestrator_url="https://lxc-volumes.s3.eu-west-3.amazonaws.com/orchestrator/orchestrator.tar.gz"
+    orchestrator_url_checksum="https://lxc-volumes.s3.eu-west-3.amazonaws.com/orchestrator/orchestrator.md5"
+    curl --header "mac: ${MAC_ADDRESS}" -o /tmp/aux $orchestrator_url
     if [ ! -f orchestrator.tar.gz ]; then
         echo "Failed to download orchestrator package"
         return 1
     fi
-    
-    # TODO: check md5 and update the version
-    
+    check_md5 "$orchestrator_url_checksum" "$orchestrator_file" 
     # For now, we'll just update the version file
-    version=$(cat orchestrator_version.csv)
-    echo "$version" > versions/orchestrator_version
+    cat orchestrator_version.csv > versions/orchestrator_version
     echo "Updated to version $version"
 }
 
@@ -70,8 +118,7 @@ white_list_vpn() {
 
 connect_openvpn() {
     echo "Connecting to OpenVPN..."
-    # Add your OpenVPN connection logic here
-    # For example:
+
     # openvpn --config /etc/openvpn/client.conf
 }
 

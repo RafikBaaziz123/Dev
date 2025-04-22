@@ -13,7 +13,7 @@ put_config_tbgw()
     . ./utilities.sh
     lxc_restart "$container_name"
     sleep 15
-    if  ! check_established_connection "tb_gateway" "$TB_host" ; then  
+    if  ! check_established_connection "tb_gateway" "$TB_port" ; then  
         #KO   
         cp $backup_file $config_file 
         lxc_restart "$container_name"

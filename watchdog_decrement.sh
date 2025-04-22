@@ -1,5 +1,4 @@
 #!/bin/sh
-. ./variables.env
 
 while IFS=',' read -r container_name _; do
     # Check if the file exists

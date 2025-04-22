@@ -27,9 +27,7 @@ check_internet() {
 }
 
 get_container_url() {
-    . ./variables.env
-    # local csv_file="./containers_params.csv"
-    local container_name="$1"
+     local container_name="$1"
     # Check if file exists
     if [ ! -f "$csv_file" ]; then
         echo "Error: File $csv_file not found." >&2
@@ -49,9 +47,7 @@ get_container_url() {
 
 
 put_container_url() {
-    . ./variables.env
-    # local csv_file="./containers_params.csv"
-    local container_url="$2"
+     local container_url="$2"
     local container_name="$1"
     # Check if file exists
     if [ ! -f "$csv_file" ]; then
@@ -66,9 +62,7 @@ put_container_url() {
 get_container_ip()
 {
 	local container_name="$1"
-    # local csv_file="./containers_params.csv"
-    # Check if file exists
-    . ./variables.env
+     # Check if file exists
     if [ ! -f "$csv_file" ]; then
         echo "Error: File $csv_file not found." >&2
         return 1
@@ -99,6 +93,7 @@ url=$(get_container_url "$container_name")
     http_code=$(curl -w "%{http_code}\n" -o "./tmp/$container_name.tar.xz" --insecure -s "$url")
     if [ "$http_code" -eq 200 ]; then
         echo "Download successful for $container_name."
+        mkdir -p "./tmp/$container_name"
         tar -xf "./tmp/$container_name.tar.xz" -C "./tmp/$container_name"   
         return 0
     else
@@ -115,6 +110,35 @@ url=$(get_container_url "$container_name")
   done
 }
 
+
+download_config() {
+local config_name="$1"
+local config_path="$2"
+url=$(get_container_url "$config_name")
+  max_retries=5
+  retry_delay=10
+  retry_count=0
+  while [ $retry_count -lt $max_retries ]; do
+    mkdir -p "./tmp/$config_name"
+    echo "Attempt $((retry_count+1)) of $max_retries: Downloading $config_name..."
+    http_code=$(curl -w "%{http_code}\n" -o "./tmp/$config_name.tar.xz" --insecure -s "$url")
+    if [ "$http_code" -eq 200 ]; then
+        echo "Download successful for $config_name."
+        tar -xf "./tmp/$config_name.tar.xz" -C "$config_path/$config_name"   
+        return 0
+    else
+        retry_count=$((retry_count+1))
+        echo "Download failed for $config_name. HTTP code: $http_code. Retry $retry_count of $max_retries."
+        if [ $retry_count -lt $max_retries ]; then
+            echo "Waiting $retry_delay seconds before next attempt..."
+            sleep $retry_delay
+        else
+            echo "Maximum retries reached. Download for $config_name failed permanently."
+            return 1
+        fi
+    fi
+  done
+}
 
 check_established_connection() {
     local service="$1"

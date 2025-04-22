@@ -49,9 +49,7 @@ def check_LXC_UP(csv_file):
             
             # Create a new client for each container to avoid message overlap
             client = mqtt.Client()
-            # source_env_file("variables.env")
-
-            load_env_file('variables.env')
+            #env varibles are set in the bash_rc file
 
             #print (type(os.environ.get("broker_ip")), os.environ.get("broker_port"))
             client.connect(os.environ.get("broker_ip"), int(os.environ.get("broker_port")), 60)
@@ -141,5 +139,5 @@ def check_last_activity_time_timeout(container_name):
 
 # Example usage
 if __name__ == "__main__":
-    load_env_file('variables.env')        
+    ('variables.env')        
     check_LXC_UP(os.environ.get('csv_file'))

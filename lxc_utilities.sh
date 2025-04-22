@@ -41,8 +41,11 @@ check_lxc(){
 
 reset_lxc(){
     local container_name="$1"
+        
     lxc_destroy "$container_name"    
+    if ["$container_name" == "matter_sdk"]; then
+    
     . ./volume.sh 
     destroy_volume "$container_name"
-    
+    fi
 }

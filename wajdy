@@ -1,0 +1,44 @@
+# Function to curl a binary from the server
+download_program() {
+    echo "Downloading $1."  >> $DAEMON_LOG 2>&1
+    component="$1"
+    url="$2"
+    output_path="/tmp/aux"
+    # Perform the download and capture the HTTP status code
+    http_code=$(curl -w "%{http_code}" -o "$output_path" --insecure "$url?imei=$IMEII" 2>/dev/null)
+    # Check if the download was successful
+    if [ "$http_code" -eq 200 ]; then
+        return 0
+    else 
+        return 1
+    fi
+}
+# Version to update any binary
+version_update() {
+  IMEII=$(nvconf get 0 devinfo.IMEI)
+  local remote=$(curl --insecure "$1?id=$IMEII" | tr -dc '[:alnum:].')
+  local current="$2"
+  datetime=$(date "+%Y_%m_%d-%H:%M") 
+  # Check if versions differ
+  compare_versions "$remote" "$current" "$3"
+  result=$?
+  if [[ $result -eq 1 ]]; then
+    echo "we want to download $3$remote" >> "$DAEMON_LOG" 2>&1
+    download_program "$3$remote" "$4"
+    if [ $? -eq 0 ]; then
+        echo "$datetime : Download of $3 completed successfully." >> "$DAEMON_LOG" 2>&1
+        mv "/tmp/aux" "$binary_path/$3"
+        chmod +x "$binary_path/$3"
+        killall "$3"
+    else
+        echo "Download of $3 failed." >> "$DAEMON_LOG" 2>&1
+    fi
+  elif [[ $result -eq 2 ]]; then
+    echo "$datetime : Warning: Remote $3 is newer than current version." >> $DAEMON_LOG 2>&1
+    # Add logic here to handle this scenario (e.g., prompt user, exit)
+  elif [[ $result -eq 0 ]]; then
+    echo "$datetime : Equal versions." >> $DAEMON_LOG 2>&1
+  else
+    echo "$datetime : Error in retrieving local version $3 ." >> $DAEMON_LOG 2>&1
+  fi
+}

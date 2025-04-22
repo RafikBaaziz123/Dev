@@ -7,13 +7,11 @@ OTBR_SETUP (){
     # Clone the repository
     git clone https://github.com/protectline/ot-br-posix.git --depth 1
     cd ot-br-posix
-
     # Run bootstrap script
     chmod +x     ./script/bootstrap
-
     ./script/bootstrap
-
     # Setup with specific interface
+    # TODO tune setup for OTBR channel
     INFRA_IF_NAME=wlan1 ./script/setup
 
     # Restart service
@@ -25,15 +23,11 @@ OTBR_SETUP (){
     sudo ot-ctl ifconfig up
     sudo ot-ctl thread start
 
-    $THREAD_CRED=$(sudo ./ot-br-posix/ot-ctl dataset active -x)
-    sed -i '/^thread_cred=/c\thread_cred='"$THREAD_CRED" variables.env
-
 }
 
 OTBR_GET_CREDS()
 {
-    $THREAD_CRED=$(sudo ./ot-br-posix/ot-ctl dataset active -x)
-    sed -i '/^thread_cred=/c\thread_cred='"$THREAD_CRED" variables.env
+    sudo ./ot-br-posix/ot-ctl dataset active -x
 
   
 }
