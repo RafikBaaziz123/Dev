@@ -65,12 +65,11 @@ datetime=$(date "+%Y_%m_%d-%H:%M")
 
 check_md5() {
     local orchestrator_md5_url="$1"
-    local orchestrator_file="$2"
+    local orchestrator_file_md5="$2"
     #TODO need url to get checksum from
-  local_md5=$(md5sum "$orchestrator_file" | awk '{print $1}')
+  local_md5=$(cat "$orchestrator_file_md5" )
   remote_md5=$(curl --header "mac: ${MAC_ADDRESS}" -s "$orchestrator_md5_url" | awk '{print $1}')
   if [ "$remote_md5" == "$local_md5" ]; then  
-          mv "/tmp/aux" "/tmp/orchestrator.tar.gz"
           tar -xzf /tmp/orchestrator.tar.gz -C /root --overwrite
           echo "$datetime : Daemon has been updated successfully." 
     else
@@ -80,17 +79,16 @@ check_md5() {
 }
 update_orchestrator() {
 
-    # For now, we'll just update the version file
     echo "Updating orchestrator..."
     # Download the orchestrator package
     orchestrator_url="https://lxc-volumes.s3.eu-west-3.amazonaws.com/orchestrator/orchestrator.tar.gz"
     orchestrator_url_checksum="https://lxc-volumes.s3.eu-west-3.amazonaws.com/orchestrator/orchestrator.md5"
-    curl --header "mac: ${MAC_ADDRESS}" -o /tmp/aux $orchestrator_url
+    curl --header "mac: ${MAC_ADDRESS}" -o /tmp/orchestrator.tar.gz $orchestrator_url
     if [ ! -f orchestrator.tar.gz ]; then
         echo "Failed to download orchestrator package"
         return 1
     fi
-    check_md5 "$orchestrator_url_checksum" "$orchestrator_file" 
+    check_md5 "$orchestrator_url_checksum" "$orchestrator_file_md5" 
     # For now, we'll just update the version file
     cat orchestrator_version.csv > versions/orchestrator_version
     echo "Updated to version $version"
